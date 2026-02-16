@@ -12,13 +12,18 @@ export default function DiaryPage() {
   const [error, setError] = useState(null);
   const {date} = useParams(); //url에서 날짜 정보 가져오기
   //Diary Iput 에서 일기 내용을 넘겨줌 (text인가는 사용자가 입력한 일기 문자열 )
-  const handleSubmit = async (text) => {
+  const handleSubmit = async ({ title, content }) => {
     setIsLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const data = await postDiaryEmpathy(text);
+      const data = await postDiaryEmpathy({
+        userId: localStorage.getItem('userId') ?? '',
+        date: date,
+        content,
+        title,
+      });
       setResult(data); //이때 data 상태를 변경 
     } catch (err) {
       setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');

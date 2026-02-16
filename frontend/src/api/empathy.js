@@ -1,4 +1,4 @@
-const USE_MOCK = true; // AI 서버 연동 시 false로 변경
+const USE_MOCK = true; // 목데이터 사용 시 true
 
 function getMockResponse(diaryText) {
   const hasNegative = /힘들|슬프|우울|짜증|화가|속상|불안|걱정|외로/.test(diaryText);
@@ -43,19 +43,30 @@ function getMockResponse(diaryText) {
 }
 
 export async function postDiaryEmpathy(diaryText) {
+  const payload = typeof diaryText === 'string'
+    ? { content: diaryText }
+    : diaryText; // 문자열이 들어오면 content로 감싸고, 객체가 들어오면 그대로 사용
+
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    return getMockResponse(diaryText);
+    return getMockResponse(payload.content ?? '');
   }
 
   const request = {
-    request_id: crypto.randomUUID(),
-    diary_text: diaryText,
+    user_id: payload.userId ?? '',
+    date: payload.date || new Date().toISOString().split('T')[0],
+    content: payload.content || "",
+    title: payload.title || "오늘의 일기",
   };
 
-  const response = await fetch('/api/diary/empathy', {
+  const accessToken = localStorage.getItem('accessToken');
+
+  const response = await fetch('/api/diary/create', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
     body: JSON.stringify(request),
   });
 

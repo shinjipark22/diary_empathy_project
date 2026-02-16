@@ -4,12 +4,17 @@ import './DiaryInput.css';
 
 export default function DiaryInput({ onSubmit, isLoading, date }) {
   const [text, setText] = useState('');
+  const [title, setTitle] = useState('');
   const [y,m,d] = date.split('-');
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trimmed = text.trim();//공백 제거
-    if (!trimmed) return;
-    onSubmit(trimmed); // 부모가 내려준 함수  (DiaryPage.jsx의 handleSubmit 함수가 호출됨)
+    const trimmedContent = text.trim();//공백 제거
+    const trimmedTitle = title.trim();
+    if (!trimmedContent) return;
+    onSubmit({
+      title: trimmedTitle,
+      content: trimmedContent,
+    }); // 부모가 내려준 함수  (DiaryPage.jsx의 handleSubmit 함수가 호출됨) -> 여기서 부모로 반환
   };
 //button이 클릭되면 handleSubmit 함수가 실행 일기 문자열)
   return (
@@ -24,6 +29,12 @@ export default function DiaryInput({ onSubmit, isLoading, date }) {
         </div>
         <p style={{ margin: '4px 0 12px 0' }}>오늘 하루를 기록해보세요</p>
       </label>
+      <input type="text" 
+        placeholder='제목을 입력하세요'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        disabled={isLoading}
+      />
       <textarea
         id="diary-text"
         className="diary-input__textarea"

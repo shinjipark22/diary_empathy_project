@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DiaryInput from '../components/DiaryInput';
 import EmpathyResult from '../components/EmpathyResult';
 import { postDiaryEmpathy } from '../api/empathy';
-
+import {useParams} from 'react-router-dom';
 
 import './DiaryPage.css';
 
@@ -10,7 +10,8 @@ export default function DiaryPage() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const {date} = useParams(); //url에서 날짜 정보 가져오기
+  //Diary Iput 에서 일기 내용을 넘겨줌 (text인가는 사용자가 입력한 일기 문자열 )
   const handleSubmit = async (text) => {
     setIsLoading(true);
     setError(null);
@@ -30,7 +31,7 @@ export default function DiaryPage() {
   return (
     <div className="diary-page">
 
-      <DiaryInput onSubmit={handleSubmit} isLoading={isLoading} />
+      <DiaryInput onSubmit={handleSubmit} isLoading={isLoading} date={date} /> 
 
       {error && (
         <div className="diary-page__error">

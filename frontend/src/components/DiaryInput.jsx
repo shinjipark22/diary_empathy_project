@@ -2,8 +2,9 @@ import { useState } from 'react';
 import './DiaryInput.css';
 
 
-export default function DiaryInput({ onSubmit, isLoading }) {
+export default function DiaryInput({ onSubmit, isLoading, date }) {
   const [text, setText] = useState('');
+  const [y,m,d] = date.split('-');
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmed = text.trim();//공백 제거
@@ -14,7 +15,8 @@ export default function DiaryInput({ onSubmit, isLoading }) {
   return (
     <form className="diary-input" onSubmit={handleSubmit}>
       <label htmlFor="diary-text" className="diary-input__label">
-        오늘 하루를 기록해보세요
+        <p><h2>오늘은 {y}년 {m}월 {d}일 입니다. </h2></p>
+        <p>오늘 하루를 기록해보세요</p>
       </label>
       <textarea
         id="diary-text"

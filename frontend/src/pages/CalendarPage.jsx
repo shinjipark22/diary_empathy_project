@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+//import 'react-calendar/dist/Calendar.css';
+import './CalendarPage.css';
 
 export default function CalendarPage() {
   const navigate = useNavigate();

@@ -15,8 +15,14 @@ export default function DiaryInput({ onSubmit, isLoading, date }) {
   return (
     <form className="diary-input" onSubmit={handleSubmit}>
       <label htmlFor="diary-text" className="diary-input__label">
-        <p><h2>오늘은 {y}년 {m}월 {d}일 입니다. </h2></p>
-        <p>오늘 하루를 기록해보세요</p>
+        <div style={{ marginBottom: '8px' }}>
+          <span>선택하신 일자는 </span>
+          <h2 style={{ color: '#007bff', margin: '4px 0' }}>
+            {y}년 {m}월 {d}일
+          </h2>
+          <span>입니다.</span>
+        </div>
+        <p style={{ margin: '4px 0 12px 0' }}>오늘 하루를 기록해보세요</p>
       </label>
       <textarea
         id="diary-text"

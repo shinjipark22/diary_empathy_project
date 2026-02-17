@@ -28,6 +28,7 @@ function App() {
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/" element={isLoggedIn ? <div className='app-container'> <CalendarPage /></div> : <Navigate to="/login" replace />} />
       <Route path = "/diary/:date" element = {isLoggedIn ? <DiaryPage /> : <Navigate to="/login" replace />} />
+      <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
     </Routes>
    
     </Router>

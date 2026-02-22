@@ -32,6 +32,9 @@ public class Diary extends BaseTimeEntity {
     @Column(name = "written_date", nullable = false)
     private LocalDate writtenDate;
 
+    @Column(name = "analysis_result", columnDefinition = "TEXT")
+    private String analysisResult;
+
     @Builder
     public Diary(User user, String title, String content, LocalDate writtenDate) {
         this.user = user;
@@ -43,5 +46,9 @@ public class Diary extends BaseTimeEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void updateAnalysisResult(String analysisResult) {
+        this.analysisResult = analysisResult;
     }
 }

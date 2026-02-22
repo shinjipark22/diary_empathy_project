@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './DiaryInput.css';
 
 
-export default function DiaryInput({ onSubmit, isLoading, date }) {
+export default function DiaryInput({ onSubmit, onSave, isLoading, date }) {
   const [text, setText] = useState('');
   const [title, setTitle] = useState('');
   const [y,m,d] = date.split('-');
@@ -44,6 +44,14 @@ export default function DiaryInput({ onSubmit, isLoading, date }) {
         rows={8}
         disabled={isLoading}
       />
+      <button
+        type="button"
+        className="diary-input__button"
+        disabled={isLoading || !text.trim()}
+        onClick={() => onSave?.({ title: title.trim(), content: text.trim() })}
+      >
+        저장
+      </button>
       <button
         type="submit"
         className="diary-input__button"

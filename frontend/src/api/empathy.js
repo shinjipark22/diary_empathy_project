@@ -53,7 +53,7 @@ export async function postDiaryEmpathy(diaryText) {
   }
 
   const request = {
-    user_id: payload.userId ?? '',
+    //user id 안쓰기로 함
     date: payload.date || new Date().toISOString().split('T')[0],
     content: payload.content || "",
     title: payload.title || "오늘의 일기",

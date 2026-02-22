@@ -1,0 +1,33 @@
+.diary-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.diary-page__header {
+  text-align: center;
+}
+
+.diary-page__header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.diary-page__header p {
+  margin: 8px 0 0;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.diary-page__error {
+  padding: 14px 18px;
+  background: #fff5f5;
+  border: 1px solid #e0b0b0;
+  border-radius: 8px;
+  color: #c62828;
+  font-size: 0.95rem;
+}

@@ -1,0 +1,80 @@
+/* 1. 전체 배경 및 테두리 정리 */
+.react-calendar {
+  width: 400px;
+  max-width: 100%;
+  background-color: #fff;
+  color: #222;
+  border-radius: 15px; /* 모서리 둥글게 */
+  border: none; /* 기본 테두리 제거 */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
+  font-family: 'Pretendard', sans-serif;
+  padding: 10px;
+}
+
+/* 2. 상단 네비게이션 (년/월 이동) */
+.react-calendar__navigation {
+  display: flex;
+  height: 50px;
+  margin-bottom: 0.5em;
+  
+  
+}
+
+.react-calendar__navigation button{
+  cursor: pointer;
+  border-color: rgba(255, 255, 255, 0);
+
+}
+
+
+
+.react-calendar__navigation button {
+  color: #7e64ff; /* 강조색 */
+  min-width: 44px;
+  background: none;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 3. 요일 부분 디자인 */
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #aaa; 
+}
+
+/* 4. 날짜 타일 디자인 */
+.react-calendar__tile {
+  max-width: 100%;
+  padding: 15px 10px;
+  background: none;
+  text-align: center;
+  line-height: 16px;
+  border-top: 2px solid #7e64ff;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+  transition: background 0.2s;
+}
+
+/* 마우스 올렸을 때 효과 */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #b1a8ff;
+}
+
+/* 5. 오늘 날짜 강조 */
+.react-calendar__tile--now {
+  background: #fff0f0;
+  color: #ff5a5a;
+  font-weight: bold;
+}
+
+/* 6. 선택된 날짜 (클릭 시) */
+.react-calendar__tile--active {
+  background: #61dafb !important; /* 프로젝트 테마색 */
+  color: white !important;
+  font-weight: bold;
+}

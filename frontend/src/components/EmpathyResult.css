@@ -43,6 +43,36 @@
   border-color: #b8dfc8;
 }
 
+.empathy-result__section--split {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.empathy-result__split-item {
+  padding: 20px;
+}
+
+.empathy-result__split-divider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 0;
+}
+
+.empathy-result__section--split h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: #888;
+}
+
+.empathy-result__section--split p {
+  margin: 0;
+  line-height: 1.7;
+  color: #333;
+}
+
 .empathy-result__actions {
   list-style: none;
   padding: 0;

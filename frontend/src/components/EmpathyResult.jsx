@@ -48,14 +48,16 @@ export default function EmpathyResult({ data }) {
         <p>{output.empathy}</p>
       </section>
 
-      <section className="empathy-result__section">
-        <h3>응원</h3>
-        <p>{output.support}</p>
-      </section>
-
-      <section className="empathy-result__section">
-        <h3>다른 시각</h3>
-        <p>{output.reframe}</p>
+      <section className="empathy-result__section empathy-result__section--split">
+        <div className="empathy-result__split-item">
+          <h3>응원</h3>
+          <p>{output.support}</p>
+        </div>
+        <div className="empathy-result__split-divider" />
+        <div className="empathy-result__split-item">
+          <h3>다른 시각</h3>
+          <p>{output.reframe}</p>
+        </div>
       </section>
 
       {output.next_actions.length > 0 && (

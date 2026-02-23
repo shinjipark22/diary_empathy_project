@@ -56,4 +56,13 @@ public class User extends BaseTimeEntity {
         }
         this.lastWrittenDate = writtenDate;
     }
+
+    public void updateProfile(String nickname, String profileImage) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+        if (profileImage != null) {
+            this.profileImage = profileImage;
+        }
+    }
 }

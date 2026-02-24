@@ -1,7 +1,7 @@
 import json
 from openai import OpenAI, OpenAIError
 
-from config import OPENAI_API_KEY, MODEL_NAME, TEMPERATURE, MODEL_ALIAS, MODEL_VERSION
+from ai.feedback.config import OPENAI_API_KEY, MODEL_NAME, TEMPERATURE, MODEL_ALIAS, MODEL_VERSION
 from llm.prompt import SYSTEM_PROMPT
 
 # 클라이언트 생성

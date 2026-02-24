@@ -1,4 +1,4 @@
-from config import MAX_RETRY
+from ai.feedback.config import MAX_RETRY
 from llm.client import generate_empathy_json
 from schema.response import EmpathyResponse
 from util.retry import retry_call

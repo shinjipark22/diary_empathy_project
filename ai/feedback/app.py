@@ -8,7 +8,7 @@ Service에게 일을 시키는 역할
 from fastapi import FastAPI
 from schema.request import DiaryRequest
 from service.empathy_service import EmpathyService
-from config import OPENAI_API_KEY
+from ai.feedback.config import OPENAI_API_KEY
 
 if not OPENAI_API_KEY:
     raise RuntimeError("OPENAI_API_KEY not in set in .env")

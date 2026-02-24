@@ -14,9 +14,8 @@ class HybridRetriever:
             self.bm25 = pickle.load(f)
         self.book_embeddings = np.load(f'{data_dir}/book_embeddings.npy')
         
-        # 모델 로드
         self.kiwi = Kiwi()
-        self.embed_model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+        self.embed_model = SentenceTransformer('BAAI/bge-m3')
         self.valid_pos = ('NNG', 'NNP', 'NNB', 'NR', 'NP', 'VV', 'VA', 'MAG')
 
     def _min_max_scale(self, scores):

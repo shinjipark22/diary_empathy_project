@@ -34,7 +34,7 @@ def build_indices(data_path: str, output_dir: str):
 
     print("Dense Retrieval을 위한 임베딩")
 
-    embed_model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+    embed_model = SentenceTransformer('BAAI/bge-m3')
     
     # feature_text 임베딩
     embeddings = embed_model.encode(documents, show_progress_bar=True)

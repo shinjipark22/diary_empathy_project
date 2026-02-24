@@ -27,7 +27,6 @@ def build_indices(data_path: str, output_dir: str):
         
     bm25 = BM25Okapi(tokenized_docs)
     
-    # 저장 디렉토리 생성
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
     with open(f'{output_dir}/bm25_index.pkl', 'wb') as f:

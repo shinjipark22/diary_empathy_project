@@ -26,6 +26,7 @@ class BGEReranker:
                 max_length=512
             )
             
+            inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
             scores = self.model(**inputs, return_dict=True).logits.view(-1,).float()
             
         ranked_indices = torch.argsort(scores, descending=True).tolist()

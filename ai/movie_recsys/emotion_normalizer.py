@@ -1,26 +1,38 @@
-STANDARD_EMOTIONS = ["기쁨", "슬픔", "분노", "불안", "놀람", "중립"]
-
-LABEL_MAP = {
-    "외로움": "슬픔",
-    "우울": "슬픔",
-    "허탈함": "슬픔",
-    "답답함": "불안",
-    "긴장": "불안",
-    "짜증": "분노",
-    "행복": "기쁨",
-    "안도감": "기쁨",
-}
-
 def normalize_emotions(llm_emotions):
-    result = {k: 0.0 for k in STANDARD_EMOTIONS}
 
-    for e in llm_emotions:
-        raw = e["label"]
-        intensity = e["intensity"]
+    mapping = {
+        # 슬픔 계열
+        "슬픔": "슬픔",
+        "우울": "슬픔",
+        "외로움": "슬픔",
+        "상실": "슬픔",
 
-        std = LABEL_MAP.get(raw, raw)
+        # 기쁨 계열
+        "기쁨": "기쁨",
+        "행복": "기쁨",
+        "즐거움": "기쁨",
+        "설렘": "기쁨",
 
-        if std in result:
-            result[std] += intensity
+        # 불안 계열
+        "불안": "불안",
+        "걱정": "불안",
+        "긴장": "불안",
+        "두려움": "불안",
 
-    return result
+        # 분노 계열
+        "분노": "분노",
+        "화남": "분노",
+        "짜증": "분노"
+    }
+
+    vector = {}
+
+    for item in llm_emotions:
+        label = item["label"]
+        intensity = item["intensity"]
+
+        base = mapping.get(label)
+        if base:
+            vector[base] = vector.get(base, 0) + intensity
+
+    return vector

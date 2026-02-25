@@ -1,25 +1,58 @@
-from ai.feedback.service.empathy_service import generate_empathy_json
-from ai.movie_recsys.recommendation_service import RecommendationService
-import uuid
+import os
+import json
+from dotenv import load_dotenv
 
-def recommend_from_diary(diary_text):
+load_dotenv()
 
-    # 1️⃣ request_id 생성
-    request_id = str(uuid.uuid4())
+from openai import OpenAI
+from movie_recsys.recommendation_service import RecommendationService
 
-    # 2️⃣ LLM 감정 분석
-    result = generate_empathy_json(diary_text, request_id)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    # 에러 처리
-    if "error" in result:
-        return result
 
-    emotions = result["output"]["emotion"]
+def recommend_from_diary(diary_text: str, movies: list, top_n: int = 3) -> dict:
+    """
+    diary_text: 사용자 일기 텍스트
+    movies: 백엔드가 주는 영화 리스트 (list[dict])
+    """
 
-    # 3️⃣ 추천
-    recommendations = RecommendationService.recommend(emotions, top_n=5)
+    prompt = f"""
+아래 일기를 읽고 감정을 1~3개 추출해라.
+반드시 JSON 객체 하나만 반환해라.
 
-    return {
-        "emotion": emotions,
-        "recommendations": recommendations
-    }
+형식:
+{{
+  "emotion": [
+    {{"label": "슬픔", "intensity": 0.8}}
+  ]
+}}
+
+일기:
+{diary_text}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        response_format={"type": "json_object"},
+    )
+
+    content = (response.choices[0].message.content or "").strip()
+
+    print("LLM RAW RESPONSE:", content)  # 🔍 디버깅용
+
+    try:
+        data = json.loads(content)
+        emotions = data.get("emotion", [])
+    except Exception as e:
+        print("JSON 파싱 실패:", e)
+        emotions = []
+
+    recs = RecommendationService.recommend(
+        llm_emotions=emotions,
+        movies=movies,
+        top_n=top_n,
+    )
+
+    return {"emotion": emotions, "recommendations": recs}

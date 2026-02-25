@@ -1,18 +1,30 @@
-from ai.movie_recsys.llm_recommend import recommend_from_diary
+import os
+import pandas as pd
 
-diary_text = """
-오늘 하루가 너무 힘들었다.
-회사에서 실수도 하고, 괜히 내가 부족한 사람처럼 느껴졌다.
-괜히 불안하고 마음이 가라앉는다.
-"""
+from movie_recsys.llm_recommend import recommend_from_diary
 
-result = recommend_from_diary(diary_text)
 
-print("🧠 감정 분석 결과:")
-print(result["emotion"])
+CSV_PATH = os.path.expanduser("~/Desktop/movies_with_overview_final.csv")
 
-print("\n🎬 추천 영화:")
-for movie in result["recommendations"]:
-    print("•", movie["title"])
-    print("  ", movie["overview"][:100], "...")
-    print()
+if __name__ == "__main__":
+
+    # 1️⃣ CSV 로드
+    df = pd.read_csv(CSV_PATH)
+
+    # 2️⃣ dict 리스트로 변환
+    movies = df.to_dict(orient="records")
+
+    # 3️⃣ 테스트할 일기 입력
+    diary_text =  "내 인생은 어떻게 될까 잘하는 것도 없고 너무 불안한 기분이 든다."
+
+    # 4️⃣ 추천 실행
+    result = recommend_from_diary(diary_text, movies, top_n=3)
+
+    # 5️⃣ 출력
+    print("🧠 감정:", result["emotion"])
+
+    print("\n🎬 추천 영화:")
+    for m in result["recommendations"]:
+        print("•", m["title"])
+        print(" ", m["overview"])
+        print("-" * 50)

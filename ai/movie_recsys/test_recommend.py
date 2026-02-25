@@ -1,4 +1,4 @@
-from ai.movie_recsys.recommendation_service import RecommendationService
+from movie_recsys.recommendation_service import RecommendationService
 
 fake_emotions = [
     {"label": "슬픔", "intensity": 0.8},

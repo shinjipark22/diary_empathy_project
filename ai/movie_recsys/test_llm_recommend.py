@@ -21,8 +21,6 @@ if __name__ == "__main__":
     result = recommend_from_diary(diary_text, movies, top_n=3)
 
     # 5️⃣ 출력
-    print("🧠 감정:", result["emotion"])
-
     print("\n🎬 추천 영화:")
     for m in result["recommendations"]:
         print("•", m["title"])

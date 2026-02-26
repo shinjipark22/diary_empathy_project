@@ -8,10 +8,11 @@ Service에게 일을 시키는 역할
 from fastapi import FastAPI
 from schema.request import DiaryRequest
 from service.empathy_service import EmpathyService
-from ai.feedback.config import OPENAI_API_KEY
+from config import OPENAI_API_KEY
 
+# API 키 없어도 서버 실행 가능하게 변경
 if not OPENAI_API_KEY:
-    raise RuntimeError("OPENAI_API_KEY not in set in .env")
+    print("WARNING: OPENAI_API_KEY not set. GPT features will be disabled.")
 
 app = FastAPI()
 

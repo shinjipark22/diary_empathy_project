@@ -27,9 +27,10 @@ class RecommendationPipeline:
             return []
 
         candidates = self.retriever.retrieve(diary_json, top_k=50, alpha=0.5)
-        
+
         emotion_label = diary_json['emotion'][0].get('label', '')
-        query_for_rerank = f"{emotion_label} {diary_json['summary']}"
+        reframe = diary_json.get('reframe', '')
+        query_for_rerank = f"{emotion_label} {diary_json['summary']} {reframe}".strip()
         
         final_recommendations = self.reranker.rerank(
             query_text=query_for_rerank,

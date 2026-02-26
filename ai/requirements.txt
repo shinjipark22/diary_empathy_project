@@ -3,3 +3,11 @@ uvicorn
 openai
 pydantic
 python-dotenv
+
+torch
+sentence-transformers
+transformers
+kiwipiepy
+rank-bm25
+pandas
+numpy

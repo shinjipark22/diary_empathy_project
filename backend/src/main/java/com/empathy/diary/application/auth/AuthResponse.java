@@ -7,9 +7,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AuthResponse {
-    @JsonProperty("user_id")
-    private Long userId;
-
     private String token;
 
     @JsonProperty("is_new_user")

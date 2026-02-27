@@ -6,14 +6,16 @@ public record DiaryResponse(
         Long id,
         String title,
         String content,
-        LocalDate date
+        LocalDate date,
+        String analysisResult
 ) {
     public static DiaryResponse from(Diary diary) {
         return new DiaryResponse(
                 diary.getId(),
                 diary.getTitle(),
                 diary.getContent(),
-                diary.getWrittenDate()
+                diary.getWrittenDate(),
+                diary.getAnalysisResult()
         );
     }
 }

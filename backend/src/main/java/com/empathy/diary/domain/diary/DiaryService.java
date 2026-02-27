@@ -21,15 +21,25 @@ public class DiaryService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
-        Diary diary = Diary.builder()
-                .user(user)
-                .title(request.title())
-                .content(request.content())
-                .writtenDate(request.date())
-                .build();
+        // 같은 날짜 일기가 있으면 UPDATE, 없으면 INSERT
+        Diary diary = diaryRepository.findByUserIdAndWrittenDate(userId, request.date())
+                .map(existing -> {
+                    existing.update(request.title(), request.content());
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    user.incrementDiaryCount();
+                    return diaryRepository.save(Diary.builder()
+                            .user(user)
+                            .title(request.title())
+                            .content(request.content())
+                            .writtenDate(request.date())
+                            .build());
+                });
 
-        Diary saved = diaryRepository.save(diary);
-        return DiaryResponse.from(saved);
+        user.updateStreak(request.date());
+
+        return DiaryResponse.from(diary);
     }
 
     public List<DiaryResponse> findAllByUser(Long userId) {

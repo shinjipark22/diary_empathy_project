@@ -19,7 +19,23 @@ public record DiaryAnalysisResponse(
             String reframe,
             List<NextAction> nextActions,
             String reflectionQuestion,
-            List<String> keywords
+            List<String> keywords,
+            List<BookRecommendation> bookRecommendations,
+            List<MovieRecommendation> movieRecommendations
+    ) {}
+
+    public record BookRecommendation(
+            int rank,
+            String title,
+            String author,
+            String category,
+            String description
+    ) {}
+
+    public record MovieRecommendation(
+            int rank,
+            String title,
+            String overview
     ) {}
 
     public record NextAction(

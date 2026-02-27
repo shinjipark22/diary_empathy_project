@@ -42,7 +42,6 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(user.getId(), user.getKakaoId());
 
         return AuthResponse.builder()
-                .userId(user.getId())
                 .token(token)
                 .isNewUser(isNewUser)
                 .build();

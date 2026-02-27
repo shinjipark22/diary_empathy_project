@@ -11,24 +11,27 @@ export default function AuthCallbackPage() {
     const [searchParams] = useSearchParams();
     
     useEffect(() => {
+        let called = false;
         const run  = async() =>{
+            if (called) return;
+            called = true;
             const code = searchParams.get('code');
             if (!code) {
                 navigate('/login',{ replace: true });
                 return;
             }
             try{
-            
+
                 const data = await postKakaoLogin(code); //인가 코드를 백엔드로 보내서 토큰 받는 함수 (api/auth.js에 구현){token, is_new_user} 형태의 응답 예상
-                
+
                 localStorage.setItem('accessToken', data.token);//로컬 스토리지에 토큰 저장
                 if (data.is_new_user) {
-                    navigate('/onboarding', { replace: true }); // 라우트 없으면 '/'로 변경
+                    window.location.replace('/onboarding');
                     return;
 
                 }
-                navigate('/', { replace: true });
-                
+                window.location.replace('/');
+
 
 
         } catch (error) {

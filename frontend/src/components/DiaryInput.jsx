@@ -2,9 +2,9 @@ import { useState } from 'react';
 import './DiaryInput.css';
 
 
-export default function DiaryInput({ onSubmit, onSave, isLoading, date }) {
-  const [text, setText] = useState('');
-  const [title, setTitle] = useState('');
+export default function DiaryInput({ onSubmit, onSave, isLoading, date, initialTitle = '', initialContent = '' }) {
+  const [text, setText] = useState(initialContent);
+  const [title, setTitle] = useState(initialTitle);
   const [y,m,d] = date.split('-');
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export default function DiaryInput({ onSubmit, onSave, isLoading, date }) {
       <label htmlFor="diary-text" className="diary-input__label">
         <div style={{ marginBottom: '8px' }}>
           <span>선택하신 일자는 </span>
-          <h2 style={{ color: '#007bff', margin: '4px 0' }}>
+          <h2 className="diary-input__date">
             {y}년 {m}월 {d}일
           </h2>
           <span>입니다.</span>

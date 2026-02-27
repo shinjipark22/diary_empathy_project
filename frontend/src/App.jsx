@@ -18,7 +18,7 @@ function App() {
     <Router>
         <Header />
       
-    
+    <div className='app-container'>
     <Routes>
       <Route path = "/login" element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
@@ -27,7 +27,7 @@ function App() {
       <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" replace />} />
       <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
     </Routes>
-   
+   </div>
     </Router>
     
 

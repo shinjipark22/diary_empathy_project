@@ -56,11 +56,11 @@ export default function CalendarPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="calendar-container">
       <Calendar onClickDay={handleClick} tileContent={tileContent} />
       {/* 통계 컨테이너 */}
       {stats && (
-        <div style={{ marginTop: 24, padding: '16px 24px', border: '1px solid #ddd', borderRadius: 8, textAlign: 'center' }}>
+        <div className="stats-container">
           <p>총 작성 수: <strong>{stats.total_count}</strong>개</p>
           <p>최애 감정: <strong>{stats.top_emotion}</strong></p>
         </div>

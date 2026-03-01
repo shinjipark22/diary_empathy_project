@@ -21,11 +21,11 @@ import './EmpathyResult.css';
 */ 
 
 export default function EmpathyResult({ data }) {
-  const { output,safety_flags,emotions} = data;
-  const hasSafetyRisk = 
-    safety_flags.self_harm_risk ||
-    safety_flags.violence_risk ||
-    safety_flags.abuse_risk;
+  const { output, safetyFlags, emotions } = data;
+  const hasSafetyRisk =
+    safetyFlags?.selfHarmRisk ||
+    safetyFlags?.violenceRisk ||
+    safetyFlags?.abuseRisk;
 
   return (
     <div className="empathy-result">
@@ -60,11 +60,11 @@ export default function EmpathyResult({ data }) {
         </div>
       </section>
 
-      {output.next_actions.length > 0 && (
+      {output.nextActions?.length > 0 && (
         <section className="empathy-result__section">
           <h3>작은 행동 제안</h3>
           <ul className="empathy-result__actions">
-            {output.next_actions.map((action, index) => (
+            {output.nextActions.map((action, index) => (
               <li key={index}>
                 <strong>{action.title}</strong>
                 <span>{action.detail}</span>
@@ -76,7 +76,7 @@ export default function EmpathyResult({ data }) {
 
       <section className="empathy-result__section empathy-result__section--question">
         <h3>생각해볼 질문</h3>
-        <p>{output.reflection_question}</p>
+        <p>{output.reflectionQuestion}</p>
       </section>
 
       {output.keywords?.length>0 && (
@@ -93,11 +93,11 @@ export default function EmpathyResult({ data }) {
       )
       }
 
-      {output.book_recommendations?.length > 0 && (
+      {output.bookRecommendations?.length > 0 && (
           <section className="empathy-result__section">
             <h3>추천 책</h3>
             <ul className="empathy-result__recommendations">
-              {output.book_recommendations.map((book) => (
+              {output.bookRecommendations.map((book) => (
                 <li key={book.rank}>
                   <strong>{book.rank}. {book.title}</strong> — {book.author}
                   <span className="empathy-result__category">{book.category}</span>
@@ -108,11 +108,11 @@ export default function EmpathyResult({ data }) {
           </section>
         )}
 
-        {output.movie_recommendations?.length > 0 && (
+        {output.movieRecommendations?.length > 0 && (
           <section className="empathy-result__section">
             <h3>추천 영화</h3>
             <ul className="empathy-result__recommendations">
-              {output.movie_recommendations.map((movie) => (
+              {output.movieRecommendations.map((movie) => (
                 <li key={movie.rank}>
                   <strong>{movie.rank}. {movie.title}</strong>
                   <p>{movie.overview}</p>

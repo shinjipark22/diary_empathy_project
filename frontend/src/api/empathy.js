@@ -1,4 +1,4 @@
-const USE_MOCK = true; // 목데이터 사용 시 true
+const USE_MOCK = false; // 목데이터 사용 시 true
 
 function getMockResponse(diaryContent) {
   //부정 감정 키워드 포함 여부 (임시로 프론트에서 간단히 판단)

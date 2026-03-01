@@ -25,8 +25,8 @@ export default function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    alert('로그아웃 되었습니다. (미리보기 환경)');
-    // window.location.replace('/login');
+    
+     window.location.replace('/login');
   };
 
   return (

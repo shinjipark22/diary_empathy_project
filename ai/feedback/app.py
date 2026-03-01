@@ -10,8 +10,9 @@ from schema.request import DiaryRequest
 from service.empathy_service import EmpathyService
 from config import OPENAI_API_KEY
 
+# API 키 없어도 서버 실행 가능하게 변경
 if not OPENAI_API_KEY:
-    raise RuntimeError("OPENAI_API_KEY not in set in .env")
+    print("WARNING: OPENAI_API_KEY not set. GPT features will be disabled.")
 
 app = FastAPI()
 

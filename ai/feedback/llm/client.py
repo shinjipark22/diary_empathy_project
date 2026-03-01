@@ -4,15 +4,32 @@ from openai import OpenAI, OpenAIError
 from config import OPENAI_API_KEY, MODEL_NAME, TEMPERATURE, MODEL_ALIAS, MODEL_VERSION
 from llm.prompt import SYSTEM_PROMPT
 
-# 클라이언트 생성
-client = OpenAI(api_key=OPENAI_API_KEY)
+# 클라이언트 생성 (API 키 없으면 None)
+client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 def generate_empathy_json(diary_text: str, request_id: str) -> dict:
     """
     OpenAI API를 호출하여 일기를 분석하고 JSON을 반환합니다.
     request_id와 model 정보는 AI에게 시키지 않고 파이썬이 직접 주입합니다.
     """
-    
+
+    # API 키 없으면 목 데이터 반환 (추천은 empathy_service에서 추가됨)
+    if client is None:
+        return {
+            "request_id": request_id,
+            "model": {"name": "mock", "version": "1.0"},
+            "output": {
+                "emotion": [{"label": "불안", "intensity": 0.7}],
+                "summary": "목 데이터 - GPT API 키 없음",
+                "empathy": "목 데이터입니다.",
+                "support": "테스트용 응답입니다.",
+                "reframe": "API 키를 설정하면 실제 응답을 받을 수 있습니다.",
+                "next_actions": [{"title": "테스트", "detail": "API 키 설정하기"}],
+                "reflection_question": "테스트가 잘 되고 있나요?",
+                "safety_flags": {"self_harm_risk": False, "violence_risk": False, "abuse_risk": False}
+            }
+        }
+
     user_prompt = f"""
 [일기 원문]
 {diary_text}

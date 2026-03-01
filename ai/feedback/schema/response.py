@@ -19,18 +19,31 @@ class SafetyFlags(BaseModel):
     violence_risk: bool # 폭력 위험
     abuse_risk: bool # 학대 위험
 
+class BookRecommendation(BaseModel):
+    rank: int # 순위 (1~3)
+    title: str # 책 제목
+    author: str # 저자
+    category: str # 카테고리
+    description: str # 한 줄 설명
+
+class MovieRecommendation(BaseModel):
+    rank: int # 순위 (1~3)
+    title: str # 영화 제목
+    overview: str # 한 줄 줄거리
+
 # 핵심 결과물
 class OutputBlock(BaseModel):
     emotion: List[EmotionItem]
     summary: str
-    empathy: str 
-    support: str 
-    reframe: str 
+    empathy: str
+    support: str
+    reframe: str
     next_actions: List[ActionItem]
-    reflection_question: str 
+    reflection_question: str
     safety_flags: SafetyFlags
+    bookRecommendations: List[BookRecommendation]
+    movieRecommendations: List[MovieRecommendation]
 
-    # 유효성 검사기 
     @validator("emotion")
     def check_emotion_len(cls, v):
         if not (1 <= len(v) <= 3):
@@ -41,7 +54,19 @@ class OutputBlock(BaseModel):
     def check_actions_len(cls, v):
         if len(v) > 2:
             raise ValueError("next_actions max 2")
-        return v 
+        return v
+
+    @validator("bookRecommendations")
+    def check_book_recommendations_len(cls, v):
+        if len(v) != 3:
+            raise ValueError("bookRecommendations must be exactly 3")
+        return v
+
+    @validator("movieRecommendations")
+    def check_movie_recommendations_len(cls, v):
+        if len(v) != 3:
+            raise ValueError("movieRecommendations must be exactly 3")
+        return v
 
 # 최종 결과물   
 class EmpathyResponse(BaseModel): 

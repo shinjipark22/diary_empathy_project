@@ -41,10 +41,9 @@ class OutputBlock(BaseModel):
     next_actions: List[ActionItem]
     reflection_question: str
     safety_flags: SafetyFlags
-    book_recommendations: List[BookRecommendation] # 도서 추천 (3개)
-    movie_recommendations: List[MovieRecommendation] # 영화 추천 (3개)
+    bookRecommendations: List[BookRecommendation]
+    movieRecommendations: List[MovieRecommendation]
 
-    # 유효성 검사기 
     @validator("emotion")
     def check_emotion_len(cls, v):
         if not (1 <= len(v) <= 3):
@@ -57,16 +56,16 @@ class OutputBlock(BaseModel):
             raise ValueError("next_actions max 2")
         return v
 
-    @validator("book_recommendations")
+    @validator("bookRecommendations")
     def check_book_recommendations_len(cls, v):
         if len(v) != 3:
-            raise ValueError("book_recommendations must be exactly 3")
+            raise ValueError("bookRecommendations must be exactly 3")
         return v
 
-    @validator("movie_recommendations")
+    @validator("movieRecommendations")
     def check_movie_recommendations_len(cls, v):
         if len(v) != 3:
-            raise ValueError("movie_recommendations must be exactly 3")
+            raise ValueError("movieRecommendations must be exactly 3")
         return v
 
 # 최종 결과물   

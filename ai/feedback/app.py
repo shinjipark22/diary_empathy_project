@@ -1,8 +1,6 @@
 """
-AI 서버의 Entry Point인 main Controller 파일
-Spring Boot 백엔드에서 보내온 요청을 가장 먼저 받아서
-이상이 없는지 확인하고
-Service에게 일을 시키는 역할
+AI 공감 피드백 서버 (FastAPI)
+- POST /api/diary/empathy: 일기 분석 + 도서/영화 추천
 """
 
 from fastapi import FastAPI
@@ -10,15 +8,19 @@ from schema.request import DiaryRequest
 from service.empathy_service import EmpathyService
 from config import OPENAI_API_KEY
 
-# API 키 없어도 서버 실행 가능하게 변경
+app = FastAPI(
+    title="Diary Empathy API",
+    description="일기 기반 공감 피드백 및 콘텐츠 추천",
+    version="1.0.0"
+)
+
 if not OPENAI_API_KEY:
-    print("WARNING: OPENAI_API_KEY not set. GPT features will be disabled.")
+    print("[WARNING] OPENAI_API_KEY not set. Using mock data.")
 
-app = FastAPI()
 
-# return 값이 (JSON Dict)가 그대로 Spring 서버에 전송됨 
 @app.post("/api/diary/empathy")
 def generate_empathy(req: DiaryRequest):
+    """일기 텍스트를 분석하여 공감 피드백과 도서/영화 추천 반환"""
     return EmpathyService.run(
         diary_text=req.diary_text,
         request_id=req.request_id

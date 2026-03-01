@@ -20,9 +20,9 @@ class EmpathyService:
             book_recs = get_book_recommendations(emotions, summary, reframe, top_k=3)
             movie_recs = get_movie_recommendations(emotions, top_k=3)
 
-            # 추천 결과 주입
-            output["book_recommendations"] = book_recs
-            output["movie_recommendations"] = movie_recs
+            # 추천 결과 주입 (camelCase)
+            output["bookRecommendations"] = book_recs
+            output["movieRecommendations"] = movie_recs
             data["output"] = output
 
             EmpathyResponse(**data)  # 스키마 검증

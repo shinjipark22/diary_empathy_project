@@ -1,5 +1,24 @@
 .login-page{
+   align-items: center;
+   justify-content: center;
+   display: flex;
+   flex-direction: column;
+   
+}
+
+.login-title{
+    font-size: 4.5rem;
+    font-weight: 600;
+     background: linear-gradient(90deg, #bcbeff, #5c39f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+   
+}
+
+.subtitle-box{
     display: flex;
-    justify-content: center;
-    margin: 30px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    margin-top: -10px;
 }

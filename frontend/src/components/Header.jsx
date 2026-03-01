@@ -5,6 +5,7 @@ import heart from '../assets/Heart.png';
 import './Header.css';
 
 export default function Header() {
+  
   const navigate = useNavigate();
   const [profile, setProfile] = useState({ 
     nickname: '로그인 해주세요', 
@@ -77,4 +78,5 @@ export default function Header() {
   
     </>
   );
+  
 }

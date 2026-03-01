@@ -6,6 +6,7 @@ import './App.css';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import { useState } from 'react';
 import LoginPage from './pages/LoginPage.jsx';
+import DiarylistPage from './pages/DiarylistPage.jsx';  
 import AuthCallbackPage from './pages/AuthCallbackPage.jsx';
 
 
@@ -18,16 +19,17 @@ function App() {
     <Router>
         <Header />
       
-    
+    <div className='app-container'>
     <Routes>
       <Route path = "/login" element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/" element={isLoggedIn ? <div className='app-container'> <CalendarPage /></div> : <Navigate to="/login" replace />} />
+      <Route path="/list" element={isLoggedIn ? <DiarylistPage /> : <Navigate to="/login" replace />} />
       <Route path = "/diary/:date" element = {isLoggedIn ? <DiaryPage /> : <Navigate to="/login" replace />} />
       <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" replace />} />
       <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
     </Routes>
-   
+   </div>
     </Router>
     
 

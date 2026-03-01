@@ -21,11 +21,11 @@ import './EmpathyResult.css';
 */ 
 
 export default function EmpathyResult({ data }) {
-  const { output } = data;
+  const { output,safety_flags,emotions} = data;
   const hasSafetyRisk = 
-    output.safety_flags.self_harm_risk ||
-    output.safety_flags.violence_risk ||
-    output.safety_flags.abuse_risk;
+    safety_flags.self_harm_risk ||
+    safety_flags.violence_risk ||
+    safety_flags.abuse_risk;
 
   return (
     <div className="empathy-result">
@@ -36,7 +36,7 @@ export default function EmpathyResult({ data }) {
         </div>
       )}
 
-      <EmotionDisplay emotions={output.emotion} />
+      <EmotionDisplay emotions={emotions} />
 
       <section className="empathy-result__section">
         <h3>요약</h3>
@@ -78,6 +78,49 @@ export default function EmpathyResult({ data }) {
         <h3>생각해볼 질문</h3>
         <p>{output.reflection_question}</p>
       </section>
+
+      {output.keywords?.length>0 && (
+        <section className="empathy-result__section">
+          <h3>키워드</h3>
+          <div className="empathy-result__keywords">
+            {output.keywords.map((keyword, index) => (
+              <span key={index} className="empathy-result__keyword">
+                {keyword}
+              </span>
+            ))}
+        </div>
+        </section>
+      )
+      }
+
+      {output.book_recommendations?.length > 0 && (
+          <section className="empathy-result__section">
+            <h3>추천 책</h3>
+            <ul className="empathy-result__recommendations">
+              {output.book_recommendations.map((book) => (
+                <li key={book.rank}>
+                  <strong>{book.rank}. {book.title}</strong> — {book.author}
+                  <span className="empathy-result__category">{book.category}</span>
+                  <p>{book.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {output.movie_recommendations?.length > 0 && (
+          <section className="empathy-result__section">
+            <h3>추천 영화</h3>
+            <ul className="empathy-result__recommendations">
+              {output.movie_recommendations.map((movie) => (
+                <li key={movie.rank}>
+                  <strong>{movie.rank}. {movie.title}</strong>
+                  <p>{movie.overview}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
     </div>
   );
 }

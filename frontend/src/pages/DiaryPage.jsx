@@ -72,21 +72,44 @@ export default function DiaryPage() {
   //handlesubmit함수를 DiartyInput에 전달 
   return (
     <div className="diary-page">
-
-      <DiaryInput onSubmit={handleSubmit} onSave={saveDiary} isLoading={isLoading} date={date} /> 
-    {existingDiaries && (
-        <div className="diary-page__existing">
-          <button onClick = {handleDelete} className = "delete-button">일기 삭제</button>
-          <p><strong>{existingDiaries.title}</strong></p>
+      <div className='diary-page__input'>
+        <DiaryInput
+          key={existingDiaries?.id ?? 'new'}
+          onSubmit={handleSubmit}
+          onSave={saveDiary}
+          isLoading={isLoading}
+          date={date}
+          initialTitle={existingDiaries?.title ?? ''}
+          initialContent={existingDiaries?.content ?? ''}
+        />
+        {existingDiaries && (
+          <div className="diary-page__existing">
+            <button onClick={handleDelete} className="delete-button">일기 삭제</button>
           </div>
-    )}
-      {error && (
-        <div className="diary-page__error">
-          {error}
-        </div>
-      )}
-
-      {result && <EmpathyResult data={result} />}
+        )}
+        {error && (
+          <div className="diary-page__error">
+            {error}
+          </div>
+        )}
+      </div>
+      <div className="diary-page__result">
+        {result ? (
+          <EmpathyResult data={result} />
+        ) : existingDiaries ? (
+          <div className="diary-page__saved">
+            <p className="diary-page__saved-label">저장된 일기</p>
+            <h3 className="diary-page__saved-title">{existingDiaries.title}</h3>
+            <p className="diary-page__saved-content">{existingDiaries.content}</p>
+          </div>
+        ) : (
+          <div className="diary-page__empty">
+            <span className="diary-page__empty-icon">♡</span>
+            <p className="diary-page__empty-title">당신의 일상을 기다리고 있어요</p>
+            <p className="diary-page__empty-sub">당신의 일상을 기록해주세요. 따듯한 공감과 함께 결과를 알려드릴게요.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

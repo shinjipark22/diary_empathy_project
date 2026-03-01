@@ -1,62 +1,46 @@
 package com.empathy.diary.infrastructure.ai;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class EmpathyAiClient {
 
-    private final RestClient restClient;
+    private final RestTemplate restTemplate;
 
     @Value("${ai.server.url:http://localhost:8000}")
     private String aiServerUrl;
 
-    public String analyze(String diaryText) {
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> analyze(String diaryText) {
+        String url = aiServerUrl + "/api/diary/empathy";
+
+        Map<String, String> request = Map.of(
+            "request_id", UUID.randomUUID().toString(),
+            "diary_text", diaryText
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         try {
-            Map<String, String> request = Map.of(
-                    "request_id", java.util.UUID.randomUUID().toString(),
-                    "diary_text", diaryText
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<Map> response = restTemplate.exchange(
+                url, HttpMethod.POST, entity, Map.class
             );
-
-            return restClient.post()
-                    .uri(aiServerUrl + "/api/diary/empathy")
-                    .body(request)
-                    .retrieve()
-                    .body(String.class);
+            return response.getBody();
         } catch (Exception e) {
-            // AI 서버 연결 실패 시 임시 응답 반환
-            return getMockResponse();
+            log.error("AI server call failed: {}", e.getMessage());
+            throw new RuntimeException("AI 분석 서버 호출 실패", e);
         }
-    }
-
-    private String getMockResponse() {
-        return """
-            {
-                "output": {
-                    "summary": "일기 분석 서비스 준비 중입니다.",
-                    "empathy": "당신의 하루를 기록해주셔서 감사합니다.",
-                    "support": "꾸준히 일기를 쓰는 것만으로도 큰 의미가 있어요.",
-                    "reframe": "오늘의 기록이 내일의 성장이 됩니다.",
-                    "next_actions": [
-                        {"title": "잠시 휴식", "detail": "5분간 깊은 호흡을 해보세요."}
-                    ],
-                    "reflection_question": "오늘 가장 기억에 남는 순간은 무엇인가요?",
-                    "keywords": ["일상", "기록"],
-                    "emotion": [
-                        {"label": "평온", "intensity": 0.7}
-                    ],
-                    "safety_flags": {
-                        "self_harm_risk": false,
-                        "violence_risk": false,
-                        "abuse_risk": false
-                    }
-                }
-            }
-            """;
     }
 }

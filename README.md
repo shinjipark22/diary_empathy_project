@@ -1,272 +1,77 @@
-# 📓 Diary Empathy Project
+# Diary Empathy Project
 
-LLM 기반 일기 공감 피드백 생성 API 프로젝트입니다.  
-사용자가 작성한 일기 텍스트를 입력받아 감정 추정, 공감 표현, 정서적 지지, 관점 재구성, 소규모 행동 제안까지 포함된 **구조화된 JSON 응답**을 반환합니다.
+사용자가 쓴 일기 텍스트를 입력받아 감정 추정, 공감 표현, 정서적 지지, 관점 재구성, 소규모 행동 제안까지 담은 구조화된 JSON을 돌려주는 LLM 공감 피드백 API다. 공감 대화 연구 구조(Empathetic Dialogue, Emotional Support Conversation)를 참고해 프롬프트 기반 MVP로 구현했다.
 
-연구 기반 공감 대화 구조(Empathetic Dialogue, Emotional Support Conversation 등)를 참고하여 프롬프트 기반 MVP 형태로 구현되었습니다.
+## 구조
 
----
-
-# 🧱 Repository Structure (Monorepo)
-
-```
-project-root/
-├── ai/           # LLM 공감 분석 API (FastAPI)
-├── backend/      # Spring Backend
-├── frontend/     # Frontend UI
-├── docs/         # 설계 문서 (선택)
-└── README.md
+```mermaid
+flowchart LR
+    A[일기 텍스트] --> B[FastAPI<br>POST /api/diary/empathy]
+    B --> C[empathy_service.py]
+    C --> D[LLM 호출<br>gpt-4o-mini]
+    D --> E[JSON 생성]
+    E --> F{스키마 검증<br>schema/response.py}
+    F -- 실패 --> D
+    F -- 통과 --> G[최종 JSON 응답]
+    C -.-> H[도서 추천<br>BM25(Kiwi) + bge-m3 검색, bge-reranker-v2-m3 리랭커]
 ```
 
----
+저장소는 모노레포다. `ai/`는 FastAPI 공감 API와 추천 모듈, `backend/`는 Spring 백엔드, `frontend/`는 UI다.
 
-# 🤖 AI Module Overview (ai/)
+## 내 역할
 
-```
-ai/
-├── app.py                  # FastAPI 진입점
-├── config.py               # 모델/파라미터 설정
-├── llm/
-│   ├── prompt.py           # 시스템 프롬프트
-│   └── client.py           # LLM 호출 모듈
-├── schema/
-│   ├── request.py          # 입력 DTO
-│   └── response.py         # 출력 스키마 + validator
-├── service/
-│   └── empathy_service.py  # 비즈니스 로직
-└── util/
-    └── retry.py            # 재시도 유틸
-```
+- 공감 피드백 API를 구현했다. FastAPI 엔드포인트, 시스템 프롬프트, OpenAI 호출 모듈, 출력 스키마와 validator, 재시도 유틸을 만들었다 (`ai/feedback/`).
+- LLM 응답이 사용자의 말투를 따라 하는 톤 미러링 문제를 프롬프트로 고쳤다.
+- 도서 추천 모듈을 구현했다. 알라딘 베스트셀러 데이터를 수집·전처리하고, Kiwi 형태소 BM25와 bge-m3 임베딩을 함께 쓰는 검색기와 bge-reranker-v2-m3 리랭커로 추천 파이프라인을 만들었다 (`ai/book_recsys/`).
 
-설계 원칙:
+백엔드와 프론트엔드는 팀원이 맡았다.
 
-- 출력 JSON 스키마 강제
-- validator 기반 출력 검증
-- 실패 시 자동 재생성
-- 프롬프트 / 모델 호출 / 서비스 로직 분리
-- 모델 교체 가능 구조
+## 구조와 설계 결정
 
----
+출력 JSON 스키마를 강제한다. 응답 필드는 감정 추정 → 공감 → 지지 → 재구성 → 소규모 행동 제안 → 성찰 질문 순서로 설계했고, `schema/response.py`의 validator가 검증한다. 검증에 실패하면 자동으로 다시 생성한다.
 
-# 🔄 Processing Flow
+프롬프트, 모델 호출, 서비스 로직을 분리했다. 모델 이름은 `ai/feedback/config.py`에서만 바꾼다.
 
-```
-Diary Text Input
-→ FastAPI Endpoint
-→ Service Layer
-→ LLM Call
-→ JSON Generation
-→ Schema Validation
-→ Retry if invalid
-→ Final JSON Response
-```
-
----
-
-# 📡 API Spec
-
-## Endpoint
-
-POST `/api/diary/empathy`
-
----
-
-## Request
+API 명세는 아래와 같다.
 
 ```json
-{
-  "request_id": "string",
-  "diary_text": "오늘 너무 불안했다..."
-}
+POST /api/diary/empathy
+{"request_id": "string", "diary_text": "오늘 너무 불안했다..."}
 ```
-
----
-
-## Response (Schema-fixed)
 
 ```json
 {
   "request_id": "...",
-  "model": {
-    "name": "diary-empathy-ko",
-    "version": "1.0.0"
-  },
+  "model": {"name": "diary-empathy-ko", "version": "1.0.0"},
   "output": {
-    "emotion": [
-      {"label": "불안", "intensity": 0.72}
-    ],
+    "emotion": [{"label": "불안", "intensity": 0.72}],
     "summary": "...",
     "empathy": "...",
     "support": "...",
     "reframe": "...",
-    "next_actions": [
-      {"title": "...", "detail": "..."}
-    ],
+    "next_actions": [{"title": "...", "detail": "..."}],
     "reflection_question": "...?",
-    "safety_flags": {
-      "self_harm_risk": false,
-      "violence_risk": false,
-      "abuse_risk": false
-    }
+    "safety_flags": {"self_harm_risk": false, "violence_risk": false, "abuse_risk": false}
   }
 }
 ```
 
----
+## 기술 스택
 
-# 🧠 Design Basis
+Python, FastAPI, OpenAI API, pydantic, kiwipiepy, rank-bm25, sentence-transformers(bge-m3), transformers(bge-reranker-v2-m3), pandas
 
-다음 공감 대화 연구 구조를 참고하여 출력 필드를 설계했습니다.
+## 실행 방법
 
-- Empathetic Dialogue
-- Emotional Support Conversation
-- CARE / MoEL 계열
-
-전략 구조:
-
-```
-감정 추정 → 공감 → 지지 → 재구성 → 소규모 행동 제안 → 성찰 질문
-```
-
----
-
-# ⚙️ Setup (AI Module)
-
-## 1️⃣ 가상환경 생성
-
-```
+```bash
 python -m venv venv
 venv\Scripts\activate
+pip install -r ai/requirements.txt
 ```
 
----
+`.env`에 `OPENAI_API_KEY=YOUR_KEY`를 넣는다. `.env`와 venv는 커밋하지 않는다.
 
-## 2️⃣ 패키지 설치
-
-```
-pip install fastapi uvicorn openai pydantic python-dotenv
+```bash
+uvicorn ai.feedback.app:app --reload
 ```
 
----
-
-## 3️⃣ 환경변수 설정 (.env)
-
-```
-OPENAI_API_KEY=YOUR_KEY
-```
-
----
-
-# ▶️ Run
-
-```
-uvicorn ai.app:app --reload
-```
-
-Swagger 테스트:
-
-```
-http://127.0.0.1:8000/docs
-```
-
----
-
-# 🌳 Git Workflow
-
-## 브랜치 전략
-
-기본 브랜치는 `main`을 유지하고, 모든 작업은 개별 브랜치에서 진행 후 PR로 merge합니다.
-
-```
-main            ← 안정 버전
-feature/*       ← 기능 개발
-fix/*           ← 버그 수정
-refactor/*      ← 구조 개선
-docs/*          ← 문서 작업
-chore/*         ← 설정/환경 작업
-```
-
----
-
-## 브랜치 네이밍 규칙
-
-형식:
-
-```
-type/파트-기능-이름
-```
-
-예시:
-
-```
-feat/ai-empathy-api-psj
-feat/backend-controller-psj
-feat/frontend-ui-psj
-fix/backend-json-error-psj
-refactor/ai-module-structure-psj
-docs/readme-update-psj
-```
-
----
-
-## 커밋 메시지 규칙
-
-브랜치 타입과 동일한 태그를 커밋 메시지 앞에 붙입니다.
-
-형식:
-
-```
-[TYPE] 변경 내용 요약
-```
-
-예시:
-
-```
-[FEAT] add empathy API validator
-[FIX] handle invalid JSON response
-[REFACTOR] split LLM client module
-[DOCS] update README
-[CHORE] add gitignore rules
-```
-
----
-
-## TYPE 태그 목록
-
-| 태그 | 의미 |
-|------|------|
-| FEAT | 기능 추가 |
-| FIX | 버그 수정 |
-| REFACTOR | 구조 변경 |
-| DOCS | 문서 |
-| TEST | 테스트 |
-| CHORE | 설정/환경 |
-
-
----
-
-## 작업 규칙
-
-- main 직접 커밋 금지
-- 반드시 브랜치 생성 후 작업
-- PR 기반 merge
-- 하나의 브랜치 = 하나의 기능
-- 리뷰 후 merge
-
-
----
-
-# 🔒 Security
-
-- API 키는 `.env`로 관리
-- `.gitignore`에 env / venv 제외
-- 모델 설정은 config.py에서 관리
-
----
-
-
-# 👥 Contributors
-
-- AI Module — shinjipark22
-- Backend — TBD
-- Frontend — TBD
+Swagger는 `http://127.0.0.1:8000/docs`에서 확인한다. 브랜치 전략과 커밋 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)에 있다.
